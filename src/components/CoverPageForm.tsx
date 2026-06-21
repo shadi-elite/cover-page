@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { type Template, getPersistentFields } from "@/lib/templates";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { generateCoverPageHTML } from "@/components/pdf/CoverPageDocument";
+import AssignmentCoverPage from "@/components/pdf/AssignmentCoverPage";
 import { MdTextField } from "@/components/ui/MaterialWrappers";
 import { IconDownload, IconRefresh, IconBookmark } from "@/components/ui/icons";
 
@@ -76,23 +77,42 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
     setTouched((prev) => ({ ...prev, [fieldName]: true }));
   }, []);
 
-  const handleGeneratePDF = useCallback(() => {
+  const pdfContainerRef = React.useRef<HTMLDivElement>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const handleGeneratePDF = useCallback(async () => {
     // Save persistent fields before generating
     const persistentNames = getPersistentFields(template);
     saveFields(persistentNames, formData);
 
-    // Generate HTML and open in new window for printing
-    const html = generateCoverPageHTML(template, formData);
-    const printWindow = window.open("", "_blank");
-    if (printWindow) {
-      printWindow.document.write(html);
-      printWindow.document.close();
-      // Wait for content to render, then trigger print
-      printWindow.onload = () => {
-        setTimeout(() => {
-          printWindow.print();
-        }, 500);
-      };
+    if (!pdfContainerRef.current) return;
+    
+    setIsGenerating(true);
+    try {
+      const { exportToPdf } = await import("@/lib/exportPdf");
+      await exportToPdf({
+        element: pdfContainerRef.current,
+        filename: `cover-page-${formData.studentId || "assignment"}.pdf`,
+      });
+    } catch (err) {
+      console.error("Failed to generate PDF:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGenerating(false);
     }
   }, [template, formData, saveFields]);
 
@@ -194,13 +214,15 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
         <md-filled-button
           id="btn-generate-pdf"
           onClick={handleGeneratePDF}
+          disabled={isGenerating || undefined}
         >
           <md-icon slot="icon"><IconDownload /></md-icon>
-          Generate PDF
+          {isGenerating ? "Generating..." : "Generate PDF"}
         </md-filled-button>
         <md-text-button
           id="btn-reset-form"
           onClick={handleReset}
+          disabled={isGenerating || undefined}
         >
           <md-icon slot="icon"><IconRefresh /></md-icon>
           Reset
@@ -213,17 +235,42 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
           id="btn-generate-pdf-mobile"
           onClick={handleGeneratePDF}
           style={{ flex: 1 }}
+          disabled={isGenerating || undefined}
         >
           <md-icon slot="icon"><IconDownload /></md-icon>
-          Generate PDF
+          {isGenerating ? "Generating..." : "Generate PDF"}
         </md-filled-button>
         <md-text-button
           id="btn-reset-form-mobile"
           onClick={handleReset}
           aria-label="Reset form"
+          disabled={isGenerating || undefined}
         >
           <md-icon slot="icon"><IconRefresh /></md-icon>
         </md-text-button>
+      </div>
+
+      {/* Off-screen PDF render target */}
+      <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
+        <div ref={pdfContainerRef}>
+          <AssignmentCoverPage
+            data={{
+              courseTitle: formData.courseTitle || "",
+              courseCode: formData.courseCode || "",
+              assignmentNo: formData.assignmentNo || formData.experimentNo || "",
+              assignmentTitle: formData.assignmentTitle || formData.experimentTitle || "",
+              studentName: formData.studentName || "",
+              studentId: formData.studentId || "",
+              section: formData.section || "",
+              semester: formData.semester || "",
+              department: formData.department || "",
+              facultyName: formData.submittedTo || "",
+              designation: formData.designation || "",
+              facultyDepartment: formData.facultyDepartment || "",
+              submissionDate: formatDate(formData.submissionDate) || "",
+            }}
+          />
+        </div>
       </div>
     </div>
   );
