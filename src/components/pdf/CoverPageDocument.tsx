@@ -126,10 +126,11 @@ export function generateCoverPageHTML(
        LOGO & UNIVERSITY HEADER
        ────────────────────────────────────────────── */
     .logo {
-      width: 22mm;
-      height: 22mm;
+      height: 28mm;
+      max-width: 160mm;
       object-fit: contain;
       margin-top: 8mm;
+      margin-bottom: 2mm;
     }
 
     .university-name {
@@ -379,15 +380,12 @@ export function generateCoverPageHTML(
     <!-- LOGO -->
     <img
       class="logo"
-      src="https://nubtkhulna.ac.bd/assets/images/icon.png"
+      src="https://nubtkhulna.ac.bd/assets/images/logo.png"
       alt="University Logo"
       onerror="this.style.display='none'"
     />
 
-    <!-- UNIVERSITY NAME — Change this to your university -->
-    <div class="university-name" style="font-size: 16pt;">
-      Northern University of Business and Technology | Khulna
-    </div>
+    <!-- UNIVERSITY NAME — Handled by the logo -->
     <div class="department-name">
       Department of ${val("department") || "Computer Science and Engineering"}
     </div>

@@ -25,13 +25,10 @@ export default function HomePage() {
         {/* ─── University Header ─── */}
         <header className="mb-10 animate-fade-in flex flex-col items-center text-center">
           <img 
-            src="https://nubtkhulna.ac.bd/assets/images/icon.png" 
+            src="https://nubtkhulna.ac.bd/assets/images/logo.png" 
             alt="NUBT Logo" 
-            className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-4 drop-shadow-sm" 
+            className="h-20 sm:h-28 object-contain mb-6 drop-shadow-sm w-full max-w-md" 
           />
-          <h1 className="md-headline-small sm:md-headline-medium text-on-surface mb-1 font-semibold">
-            Northern University of Business and Technology | Khulna
-          </h1>
           <p className="md-title-medium text-primary mb-6 font-medium">
             Department of Computer Science and Engineering
           </p>
