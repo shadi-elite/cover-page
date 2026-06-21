@@ -6,6 +6,12 @@ import { useLocalStorage } from "@/lib/useLocalStorage";
 import { generateCoverPageHTML } from "@/components/pdf/CoverPageDocument";
 import { MdTextField } from "@/components/ui/MaterialWrappers";
 
+// Web component imports
+import '@material/web/icon/icon.js';
+import '@material/web/labs/card/outlined-card.js';
+import '@material/web/button/filled-button.js';
+import '@material/web/button/text-button.js';
+
 interface CoverPageFormProps {
   template: Template;
 }

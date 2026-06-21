@@ -5,6 +5,9 @@ import { templates, type Template } from "@/lib/templates";
 import TemplateSelector from "@/components/TemplateSelector";
 import CoverPageForm from "@/components/CoverPageForm";
 
+// Web component imports for the main page
+import '@material/web/icon/icon.js';
+
 export default function HomePage() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template>(
     templates[0]

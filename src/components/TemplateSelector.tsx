@@ -3,7 +3,11 @@
 import React, { useEffect } from "react";
 import { templates, type Template } from "@/lib/templates";
 import { cn } from "@/lib/utils";
-import "@/components/ui/MaterialWrappers"; // Ensures web components are registered
+
+// Web component imports
+import '@material/web/icon/icon.js';
+import '@material/web/labs/card/outlined-card.js';
+import '@material/web/labs/card/elevated-card.js';
 
 interface TemplateSelectorProps {
   selectedId: string;
