@@ -84,10 +84,11 @@ const studentFields: TemplateField[] = [
     name: "department",
     label: "Department",
     type: "text",
-    placeholder: "e.g. Computer Science & Engineering",
+    placeholder: "e.g. Computer Science and Engineering",
     required: false,
     persistent: true,
     group: "student",
+    defaultValue: "Computer Science and Engineering",
   },
 ];
 

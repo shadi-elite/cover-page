@@ -379,17 +379,17 @@ export function generateCoverPageHTML(
     <!-- LOGO -->
     <img
       class="logo"
-      src="/logo.png"
+      src="https://nubtkhulna.ac.bd/assets/images/icon.png"
       alt="University Logo"
       onerror="this.style.display='none'"
     />
 
     <!-- UNIVERSITY NAME — Change this to your university -->
-    <div class="university-name">
-      Your University Name
+    <div class="university-name" style="font-size: 16pt;">
+      Northern University of Business and Technology | Khulna
     </div>
     <div class="department-name">
-      ${val("department") || "Department Name"}
+      Department of ${val("department") || "Computer Science and Engineering"}
     </div>
 
     <div class="divider"></div>

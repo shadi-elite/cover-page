@@ -5,6 +5,7 @@ import { type Template, getPersistentFields } from "@/lib/templates";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { generateCoverPageHTML } from "@/components/pdf/CoverPageDocument";
 import { MdTextField } from "@/components/ui/MaterialWrappers";
+import { IconDownload, IconRefresh, IconBookmark } from "@/components/ui/icons";
 
 // Web component imports
 import '@material/web/icon/icon.js';
@@ -36,6 +37,7 @@ const groupOrder = ["course", "student", "submission"];
 export default function CoverPageForm({ template }: CoverPageFormProps) {
   const { storedData, isLoaded, saveFields } = useLocalStorage();
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [hasInitialized, setHasInitialized] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -59,6 +61,7 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
       }
     });
     setFormData(initial);
+    setTouched({});
     setHasInitialized(true);
   }, [template, isLoaded, storedData]);
 
@@ -68,6 +71,10 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
     },
     []
   );
+
+  const handleBlur = useCallback((fieldName: string) => {
+    setTouched((prev) => ({ ...prev, [fieldName]: true }));
+  }, []);
 
   const handleGeneratePDF = useCallback(() => {
     // Save persistent fields before generating
@@ -101,6 +108,7 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
       }
     });
     setFormData(reset);
+    setTouched({});
   }, [template, storedData]);
 
   if (!hasInitialized || !mounted) {
@@ -136,35 +144,45 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
           <md-outlined-card key={groupKey} className="w-full">
             <div className="p-5 sm:p-6">
               <div className="mb-5">
-                <h3 className="md-typescale-title-large text-primary mb-1">
+                <h3 className="md-title-large text-primary mb-1">
                   {groupInfo.title}
                 </h3>
-                <p className="md-typescale-body-medium text-on-surface-variant">
+                <p className="md-body-medium text-on-surface-variant">
                   {groupInfo.description}
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {fields.map((field) => (
+                {fields.map((field) => {
+                  const value = formData[field.name] || "";
+                  const isTouched = touched[field.name];
+                  const showError = field.required && isTouched && !value.trim();
+
+                  return (
                   <div key={field.name} className="flex flex-col relative pt-1">
                     <MdTextField
                       id={`field-${field.name}`}
                       label={field.label + (field.required ? ' *' : '')}
                       type={field.type === "date" ? "date" : "text"}
                       placeholder={field.placeholder}
-                      value={formData[field.name] || ""}
+                      value={value}
                       onChange={(value) => handleChange(field.name, value)}
+                      onBlur={() => handleBlur(field.name)}
+                      error={showError}
+                      errorText={showError ? "This field is required" : undefined}
                       className="w-full"
                     />
                     {field.persistent && (
                       <div className="absolute -top-1 right-2 z-10">
                          <span className="saved-badge" title="Remembered across sessions">
-                          <md-icon style={{fontSize: '14px', width: '14px', height: '14px'}}>bookmark</md-icon>
+                          <md-icon style={{fontSize: '14px', width: '14px', height: '14px'}}>
+                            <IconBookmark />
+                          </md-icon>
                           saved
                         </span>
                       </div>
                     )}
                   </div>
-                ))}
+                )})}
               </div>
             </div>
           </md-outlined-card>
@@ -177,14 +195,14 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
           id="btn-generate-pdf"
           onClick={handleGeneratePDF}
         >
-          <md-icon slot="icon">download</md-icon>
+          <md-icon slot="icon"><IconDownload /></md-icon>
           Generate PDF
         </md-filled-button>
         <md-text-button
           id="btn-reset-form"
           onClick={handleReset}
         >
-          <md-icon slot="icon">refresh</md-icon>
+          <md-icon slot="icon"><IconRefresh /></md-icon>
           Reset
         </md-text-button>
       </div>
@@ -196,7 +214,7 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
           onClick={handleGeneratePDF}
           style={{ flex: 1 }}
         >
-          <md-icon slot="icon">download</md-icon>
+          <md-icon slot="icon"><IconDownload /></md-icon>
           Generate PDF
         </md-filled-button>
         <md-text-button
@@ -204,7 +222,7 @@ export default function CoverPageForm({ template }: CoverPageFormProps) {
           onClick={handleReset}
           aria-label="Reset form"
         >
-          <md-icon slot="icon">refresh</md-icon>
+          <md-icon slot="icon"><IconRefresh /></md-icon>
         </md-text-button>
       </div>
     </div>

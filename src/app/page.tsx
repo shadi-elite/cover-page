@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { templates, type Template } from "@/lib/templates";
 import TemplateSelector from "@/components/TemplateSelector";
 import CoverPageForm from "@/components/CoverPageForm";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // Web component imports for the main page
 import '@material/web/icon/icon.js';
@@ -14,16 +15,33 @@ export default function HomePage() {
   );
 
   return (
-    <main className="min-h-screen px-4 py-8 sm:py-12 md:py-16 mobile-bottom-pad">
+    <main className="min-h-screen px-4 py-8 sm:py-12 md:py-16 mobile-bottom-pad bg-[var(--md-sys-color-background)]">
       <div className="max-w-2xl mx-auto">
-        {/* ─── Title ─── */}
-        <header className="mb-8 sm:mb-10 animate-fade-in text-center sm:text-left">
-          <h1 className="md-typescale-headline-large text-primary mb-2">
-            Cover Page Generator
+        {/* ─── Top Controls ─── */}
+        <div className="flex justify-end mb-4 animate-fade-in">
+          <ThemeToggle />
+        </div>
+
+        {/* ─── University Header ─── */}
+        <header className="mb-10 animate-fade-in flex flex-col items-center text-center">
+          <img 
+            src="https://nubtkhulna.ac.bd/assets/images/icon.png" 
+            alt="NUBT Logo" 
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-4 drop-shadow-sm" 
+          />
+          <h1 className="md-headline-small sm:md-headline-medium text-on-surface mb-1 font-semibold">
+            Northern University of Business and Technology | Khulna
           </h1>
-          <p className="md-typescale-body-large text-on-surface-variant max-w-xl">
-            Fill in your details, pick a template, and download a professional PDF instantly.
+          <p className="md-title-medium text-primary mb-6 font-medium">
+            Department of Computer Science and Engineering
           </p>
+
+          <div className="max-w-xl bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] rounded-2xl p-4 sm:p-5 w-full shadow-sm">
+            <h2 className="md-title-medium text-on-surface mb-1">Cover Page Generator</h2>
+            <p className="md-body-medium text-on-surface-variant">
+              Fill in your details, pick a template, and download a professional PDF instantly.
+            </p>
+          </div>
         </header>
 
         {/* ─── Template Selector ─── */}
@@ -44,7 +62,7 @@ export default function HomePage() {
 
         {/* ─── Footer ─── */}
         <footer className="text-center mt-12 pb-6 animate-fade-in animate-delay-300">
-          <p className="md-typescale-body-medium text-outline">
+          <p className="md-body-medium text-outline">
             Your data stays in your browser. Nothing is sent to any server.
           </p>
         </footer>

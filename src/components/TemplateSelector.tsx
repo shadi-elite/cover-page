@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { templates, type Template } from "@/lib/templates";
 import { cn } from "@/lib/utils";
+import { IconDescription, IconScience } from "@/components/ui/icons";
 
 // Web component imports
 import '@material/web/icon/icon.js';
@@ -14,9 +15,9 @@ interface TemplateSelectorProps {
   onSelect: (template: Template) => void;
 }
 
-const iconMap: Record<string, string> = {
-  assignment: "description",
-  "lab-report": "science",
+const iconMap: Record<string, React.ReactNode> = {
+  assignment: <IconDescription />,
+  "lab-report": <IconScience />,
 };
 
 export default function TemplateSelector({
@@ -56,12 +57,12 @@ export default function TemplateSelector({
                       : "text-on-surface-variant bg-[var(--md-sys-color-surface-container-high)]"
                   )}
                 >
-                  <md-icon>{iconMap[template.id] || "description"}</md-icon>
+                  <md-icon>{iconMap[template.id] || <IconDescription />}</md-icon>
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2
                     className={cn(
-                      "md-typescale-title-large mb-1",
+                      "md-title-large mb-1",
                       isActive
                         ? "text-primary"
                         : "text-on-surface"
@@ -69,7 +70,7 @@ export default function TemplateSelector({
                   >
                     {template.name}
                   </h2>
-                  <p className="md-typescale-body-medium text-on-surface-variant">
+                  <p className="md-body-medium text-on-surface-variant">
                     {template.description}
                   </p>
                 </div>
